@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import re
+import time
  
 file_name = '121125-cqwwcw.ADI'
+file_name = '2009-September.adi'
 
 #src http://web.bxhome.org/blog/ok4bx/2012/05/adif-parser-python 
 def parse_adif(fn):
@@ -18,9 +20,39 @@ def parse_adif(fn):
     return log
 #endsrc
 
-def find_operators(log):
-	pass
+def RatesPerHour(log):
+	ratesPerHour = {}
+	for qso in log:
+		t = time.strptime(qso['qso_date']+qso['time_on'][0:2], '%Y%m%d%H')
+		if t in ratesPerHour:
+			ratesPerHour[t] += 1
+		else:
+			ratesPerHour[t] = 1
+	return ratesPerHour
+
+def QSOsByOperator(log):
+	qsosByOperator = {}
+	for qso in log:
+		if qso['operator'] in qsosByOperator:
+			qsosByOperator[qso['operator']] += 1
+		else:
+			qsosByOperator[qso['operator']] = 1
+	return qsosByOperator
+
+def QSOsByBand(log):
+	qsosByBand = {}
+	for qso in log:
+		if qso['band'] in qsosByBand:
+			qsosByBand[qso['band']] += 1
+		else:
+			qsosByBand[qso['band']] = 1
+	return qsosByBand
 
 l = parse_adif(file_name)
-print(l[0])
 print(len(l))
+
+print(QSOsByBand(l))
+print(QSOsByOperator(l))
+rph = RatesPerHour(l)
+for hour in sorted(rph.keys()):
+	print('%s -> %3i' % (time.asctime(hour), rph[hour]))
