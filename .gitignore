@@ -33,3 +33,11 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# PyCharm
+.idea/*
+
+# personal data
+*.adi
+*.ADI
+TODO
