@@ -1,6 +1,7 @@
 __author__ = 'dk2ab'
 
 import time
+import re
 
 class ContestStats:
 
@@ -44,3 +45,20 @@ class ContestStats:
         for qso in self.log:
             self.byBand(qsosByBand, qso)
         return qsosByBand
+
+    def qsosByMode(self):
+        qsosByMode = {}
+        for qso in self.log:
+            mode = qso['mode']
+            if mode not in qsosByMode:
+                qsosByMode[mode] = {}
+            self.byBand(qsosByMode[mode], qso)
+        return qsosByMode
+
+    def prefixes(self):
+        prefixes = set()
+        for qso in self.log:
+            prefix = re.findall('([\w]{1,2}[\d]+)', qso['call'])
+            assert len(prefix) == 1, "There might be an error in the prefix-regexp (%s, %s)" % (qso['call'], prefix)
+            prefixes.add(prefix[0])
+        return sorted(prefixes)
